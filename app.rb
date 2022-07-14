@@ -1,4 +1,5 @@
 require "sinatra/activerecord"
+require "sinatra/reloader"
 
 class Task < ActiveRecord::Base
     belongs_to :decision
