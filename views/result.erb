@@ -2,22 +2,13 @@
     <div class="row justify-content-center mb-5">
         <div class="col-10 col-md-8 col-lg-6">
             <ul class="list-group">
-                <% @tasks.each do |id, task| %>
-                <li id="<%= id %>" class="list-group-item d-flex justify-content-between align-items-center <%= task[1]!=0 ? 'list-group-item-danger' : '' %>">
-                    <%= task[0] %>
-                    <span class="badge bg-primary rounded-pill"><%= task[1] %></span>
+                <% @tasks.each do |task| %>
+                <li id="<%= task.id %>" class="list-group-item d-flex justify-content-between align-items-center <%= task.votes!=0 ? 'list-group-item-primary' : '' %>">
+                    <%= task.name %>
+                    <span class="badge bg-primary rounded-pill"><%= task.votes %></span>
                 </li>
                 <% end %>
             </ul>
-        </div>
-    </div>
-    <div class="row justify-content-center">
-        <div class="col-10 col-md-8 col-lg-6">
-            <form action="/clear" method="post">
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-outline-danger">Borrar votaciones</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>

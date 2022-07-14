@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'securerandom'
 
 # require all of the gems in the gemfile
 require 'bundler'

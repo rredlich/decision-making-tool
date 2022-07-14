@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="row justify-content-center mb-5">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h4>Lo básico 🌟</h4>
+            <p class="text-muted">Guarda el identificador de tu lista de tareas para que más adelante puedas ver los resultados y gestionarla</p>
+            <div class="input-group mb-3">
+                <input id="decision-hash" type="text" class="form-control" aria-label="decision hash" aria-describedby="button-decision-hash" value="<%= @hash %>" disabled>
+                <button class="btn btn-outline-secondary" type="button" id="button-decision-hash"><i class="bi bi-clipboard-fill"></i></button>
+            </div>
+            <p class="text-muted">Para empezar a priorizar con el resto de tu equipo, copia el siguiente link y compártelo con las personas que quieres que participen</p>
+            <div class="input-group">
+                <input id="decision-url" type="text" class="form-control" aria-label="decision url" aria-describedby="button-decision-url" value="https://decision-making-tool.herokuapp.com/decisions/<%= @hash %>/vote" disabled>
+                <button class="btn btn-outline-secondary" type="button" id="button-decision-url"><i class="bi bi-clipboard-fill"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mb-5">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h4>Tareas que quieres priorizar 🤔</h4>
+            <ul class="list-group">
+                <% @tasks.each do |task| %>
+                <li id="<%= task.id %>" class="list-group-item d-flex justify-content-between align-items-center <%= task.votes!=0 ? 'list-group-item-primary' : '' %>">
+                    <%= task.name %>
+                    <span class="badge bg-primary rounded-pill"><%= task.votes %></span>
+                </li>
+                <% end %>
+            </ul>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10 col-md-8 col-lg-6">
+            <h4>Configuraciones ⚙️</h4>
+            <p class="text-muted">Por ahora solo puedes borrar las votaciones para dejarlas en 0 y empezar de nuevo, pero pronto se vendrán más cosas 😀</p>
+            <form action="/decisions/<%= @hash %>/clean" method="post">
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-danger">Borrar votaciones</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

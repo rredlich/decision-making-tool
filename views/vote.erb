@@ -1,12 +1,12 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-10 col-md-8 col-lg-6">
-            <form action="/result" method="post">
+            <form action="/decisions/<%= @hash %>/result" method="post">
                 <div class="list-group mb-3">
-                    <% @tasks.each do |id, task| %>
+                    <% @tasks.each do |task| %>
                         <label class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox"  id="<%= id %>" name="<%= id %>">
-                            <%= task[0] %>
+                            <input class="form-check-input me-1" type="checkbox"  id="<%= task.id %>" name="<%= task.id %>">
+                            <%= task.name %>
                         </label>
                     <% end %>
                 </div>

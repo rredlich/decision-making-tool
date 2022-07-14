@@ -1,70 +1,89 @@
+require "sinatra/activerecord"
+
+class Task < ActiveRecord::Base
+    belongs_to :decision
+end
+
+class Decision < ActiveRecord::Base
+    has_many :tasks
+end
+
 class MyApp < Sinatra::Base
+    register Sinatra::ActiveRecordExtension
+    
     configure :development do
         register Sinatra::Reloader
     end
-    
-    def read_tasks
-        tasks_read = File.read("tasks.txt").split("\n")
-
-        tasks = {}
-        for record in tasks_read do
-            task = record.split(", ")
-            tasks[task[0]] = [task[1], task[2].to_i]
-        end
-
-        return tasks
-    end
-
-    def write_tasks(tasks, clear=false)
-        File.open("tasks.txt", "w") do |file|
-            tasks.each do |key, array|
-                if clear
-                    file.write(key + ", " + array[0] + ", 0\n")
-                else
-                    file.write(key + ", " + array[0] + ", " + array[1].to_s + "\n")
-                end
-            end
-        end
-    end
 
     get '/' do
-        @tasks = read_tasks
-
-        erb :index
-    end
-
-    get '/new' do
+        
         erb :new
     end
 
-    post '/result' do
-        tasks_tmp = read_tasks
-        for k in params.keys do
-            tasks_tmp[k][1]=tasks_tmp[k][1]+1
-        end
-        write_tasks(tasks_tmp)
-        @tasks = tasks_tmp.sort_by {|_key, array| array[1]}.reverse.to_h
-        
-        erb :result
+    get '/decisions' do
+        erb :new
     end
 
-    post '/new-vote' do
-        @tasks = {}
+    post '/decisions' do
+        hash = SecureRandom.base64(5)
+
+        D = Decision.create(hash_id: hash)
         for v in params do
-            @tasks[v[0]] = [v[1], 0]
+            D.tasks.create(name: v[1], votes: 0)
         end
-        @tasks = @tasks.sort_by { |key| key }.to_h
-
-        write_tasks(@tasks)
+        @tasks = D.tasks
         
-        erb :newvote
+        redirect to "settings/decisions/#{hash}"
     end
 
-    post '/clear' do
-        tasks_tmp = read_tasks
-        write_tasks(tasks_tmp, true)
-        @tasks = read_tasks
+    get '/settings/decisions/:hash' do
+        D = Decision.find_by(hash_id: params[:hash])
+        @tasks = D.tasks.order(votes: :desc)
+        @hash = params[:hash]
 
+        erb :settings
+    end
+
+    get '/decisions/:hash/vote' do
+        D = Decision.find_by(hash_id: params[:hash])
+        @tasks = D.tasks
+        @hash = params[:hash]
+
+        erb :vote
+    end
+
+    get '/decisions/:hash/result' do
+        D = Decision.find_by(hash_id: params[:hash])
+        @tasks = D.tasks.order(votes: :desc)
+        @hash = D.hash_id
+        
         erb :result
+    end
+
+    post '/decisions/:hash/result' do
+        D = Decision.find_by(hash_id: params[:hash])
+        @tasks = D.tasks
+        @hash = D.hash_id
+
+        for k in params.keys do
+            if k != "hash"
+                T = @tasks.find_by(id: k)
+                T.update(votes: T.votes+1)
+            end
+        end
+        
+        redirect to "decisions/#{@hash}/result"
+    end
+
+    post '/decisions/:hash/clean' do
+        D = Decision.find_by(hash_id: params[:hash])
+        @tasks = D.tasks
+        @hash = D.hash_id
+
+        @tasks.each do |t|
+            t.update(votes: 0)
+        end
+        
+        redirect to "settings/decisions/#{@hash}"
     end
 end

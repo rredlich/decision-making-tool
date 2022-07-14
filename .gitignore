@@ -1,4 +1,5 @@
 .bundle
 .env
 .byebug_history
+dev.sqlite3
 tmp
