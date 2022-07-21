@@ -31,5 +31,10 @@
         <script src="<%= url('js/bootstrap.min.js') %>"></script>
         <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
         <script src="<%= url('js/custom.js') %>"></script>
+        <% if @js %>
+            <% @js.each do |file| %>
+                <%= "<script src="+url("/js/"+file)+"></script>" %>
+            <% end %>
+        <% end %>
     </body>
 </html>

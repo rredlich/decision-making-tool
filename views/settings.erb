@@ -20,7 +20,7 @@
             <ul class="list-group">
                 <% @tasks.each do |task| %>
                 <li id="<%= task.id %>" class="list-group-item d-flex justify-content-between align-items-center <%= task.votes!=0 ? 'list-group-item-primary' : '' %>">
-                    <%= task.name %>
+                    <%= h task.name %>
                     <span class="badge bg-primary rounded-pill"><%= task.votes %></span>
                 </li>
                 <% end %>
@@ -30,7 +30,18 @@
     <div class="row justify-content-center">
         <div class="col-10 col-md-8 col-lg-6">
             <h4>Configuraciones ⚙️</h4>
-            <p class="text-muted">Por ahora solo puedes borrar las votaciones para dejarlas en 0 y empezar de nuevo, pero pronto se vendrán más cosas 😀</p>
+            <p class="text-muted">Por ahora solo puedes seleccionar la cantidad máxima de votos por persona, pero pronto se vendrán más cosas 😀</p>
+            <form class="mb-4" action="/decisions/<%= @hash %>" method="post">
+                <input id="hidden" type="hidden" name="_method" value="patch">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="vote-limit-input" name="vote_limit" value="<%= @vote_limit %>" min="1" max="<%= @tasks.length%>">
+                    <label for="vote-limit-input">Límite de votos</label>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-outline-primary">Guardar</button>
+                </div>
+            </form>
+            <p class="text-muted">También puedes borrar las votaciones para dejarlas en 0 y empezar de nuevo</p>
             <form action="/decisions/<%= @hash %>/clean" method="post">
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-outline-danger">Borrar votaciones</button>

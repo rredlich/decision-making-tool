@@ -1,12 +1,15 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-10 col-md-8 col-lg-6">
+            <h4>Empecemos a priorizar 🎯 </h4>
+            <p class="text-muted">Estas tareas no se van a priorizar solas.
+             Vota por un máximo de <strong id="decision-vote-limit"><%= @vote_limit%></strong> <strong>tareas</strong> que creas que son las más importates de la lista.</p>
             <form action="/decisions/<%= @hash %>/result" method="post">
                 <div class="list-group mb-3">
                     <% @tasks.each do |task| %>
                         <label class="list-group-item">
                             <input class="form-check-input me-1" type="checkbox"  id="<%= task.id %>" name="<%= task.id %>">
-                            <%= task.name %>
+                            <%= h task.name %>
                         </label>
                     <% end %>
                 </div>

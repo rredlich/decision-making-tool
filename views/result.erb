@@ -4,7 +4,7 @@
             <ul class="list-group">
                 <% @tasks.each do |task| %>
                 <li id="<%= task.id %>" class="list-group-item d-flex justify-content-between align-items-center <%= task.votes!=0 ? 'list-group-item-primary' : '' %>">
-                    <%= task.name %>
+                    <%= h task.name %>
                     <span class="badge bg-primary rounded-pill"><%= task.votes %></span>
                 </li>
                 <% end %>
